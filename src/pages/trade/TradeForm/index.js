@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import styled from 'styled-components';
 
-import { getBuyingPrice } from '../../../api';
+import { getPrice } from '../../../api';
 import { ORDER_TYPES, OPERATION_TYPE, CURRENCIES } from "../../../constants";
 import { AppContext } from "../../../state";
-import { buyCrypto } from "../../../state/actions";
+import { buyCrypto, sellCrypto } from "../../../state/actions";
 
 import OperationSection from './OperationSection';
 import CurrencySelection from "./CurrencySelection";
@@ -38,7 +38,7 @@ const TradeForm = () => {
   const [latestCurrencyPrice, setLatestCurrencyPrice] = useState(0);
 
   const getLatestBuyingPrice = async () => {
-    const price = await getBuyingPrice(currencyToOperate, CURRENCIES.ARS);
+    const price = await getPrice(currencyToOperate, isBuying);
     setLatestCurrencyPrice(price.data.quote);
   }
 
@@ -50,7 +50,7 @@ const TradeForm = () => {
     const intervalId = setInterval(getLatestBuyingPrice, 3000);
 
     return () => window.clearInterval(intervalId); 
-  }, [currencyToOperate]);
+  }, [currencyToOperate, operationType]);
 
  /**
   * For some reason e.target.value was undefined sometimes
@@ -79,6 +79,13 @@ const TradeForm = () => {
       };
       // When buying, we know that the currency to buy can never be ARS
       dispatcher(buyCrypto(pair, currencyToOperate));
+    } else {
+      const pair = {
+        [paymentCurrency]: amount,
+        [returnCurrency]: amount * latestCurrencyPrice
+      };
+
+      dispatcher(sellCrypto(pair, currencyToOperate));
     }
   }
 
@@ -97,6 +104,7 @@ const TradeForm = () => {
         <AmountSection
           amount={amount}
           latestCurrencyPrice={latestCurrencyPrice}
+          currencyToOperate={currencyToOperate}
           onChange={onAmountChange}
           isBuying={isBuying}
         />

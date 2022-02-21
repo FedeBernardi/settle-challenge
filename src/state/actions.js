@@ -19,3 +19,11 @@ export const buyCrypto = (currencyPair, currencyToBuy) => ({
     currencyToBuy
   }
 });
+
+export const sellCrypto = (currencyPair, currencyToSell) => ({
+  type: actionTypes.SELL_CRYPTO,
+  payload: {
+    currencyPair,
+    currencyToSell
+  }
+});
