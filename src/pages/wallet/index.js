@@ -4,6 +4,8 @@ import { Table } from 'antd';
 
 import { AppContext } from '../../state';
 
+import OrdersHistory from "./OrdersHistory";
+
 const tableConfig = [
   {
     title: 'Currency',
@@ -18,10 +20,17 @@ const tableConfig = [
 ]
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  .wallet-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 50px;
+  }
+
+  .orders-container {
+    margin: 25px;
+  }
 `;
 
 const WalletPage = () => {
@@ -38,14 +47,20 @@ const WalletPage = () => {
 
   return (
     <Container>
-      <h1>Wallet</h1>
-      <h4>Check your balances</h4>
-      <Table
-        dataSource={getTableData()}
-        columns={tableConfig}
-        pagination={false}
-        rowKey={obj => obj.rowKey}
-      />
+      <div className="wallet-container">
+        <h1>Wallet</h1>
+        <h4>Check your balances</h4>
+        <Table
+          dataSource={getTableData()}
+          columns={tableConfig}
+          pagination={false}
+          rowKey={obj => obj.rowKey}
+        />
+      </div>
+      <div className="orders-container">
+        <h1>Orders History</h1>
+        <OrdersHistory />
+      </div>
     </Container>
   )
 }

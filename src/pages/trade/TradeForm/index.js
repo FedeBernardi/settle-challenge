@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import styled from 'styled-components';
+import { notification } from "antd";
 
 import { getPrice } from '../../../api';
 import { ORDER_TYPES, OPERATION_TYPE, CURRENCIES } from "../../../constants";
@@ -29,7 +30,7 @@ const Container = styled.div`
 `;
 
 const TradeForm = () => {
-  const [state, dispatcher] = useContext(AppContext);
+  const [, dispatcher] = useContext(AppContext);
   const [operationType, setOperationType] = useState(OPERATION_TYPE.BUY);
   const [currencyToOperate, setCurrencyToOperate] = useState(CURRENCIES.BTC);
   const [orderType, setOrderType] = useState(ORDER_TYPES.MARKET);
@@ -78,15 +79,24 @@ const TradeForm = () => {
         [returnCurrency]: amount / latestCurrencyPrice
       };
       // When buying, we know that the currency to buy can never be ARS
-      dispatcher(buyCrypto(pair, currencyToOperate));
+      dispatcher(buyCrypto(pair, currencyToOperate, latestCurrencyPrice, orderType));
     } else {
       const pair = {
         [paymentCurrency]: amount,
         [returnCurrency]: amount * latestCurrencyPrice
       };
 
-      dispatcher(sellCrypto(pair, currencyToOperate));
+      dispatcher(sellCrypto(pair, currencyToOperate, latestCurrencyPrice, orderType));
     }
+
+    notification.success({
+      message: 'Operation done!',
+      description:
+        `Your trade was successful`,
+    });
+
+    // reseting the input
+    setAmount('');
   }
 
   return (

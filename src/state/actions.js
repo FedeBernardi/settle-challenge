@@ -12,18 +12,22 @@ export const depositFiat = amount => ({
  * and their quantities
  * @param currencyToBuy string - is the ticker of the currency being bought
  */
-export const buyCrypto = (currencyPair, currencyToBuy) => ({
+export const buyCrypto = (currencyPair, currencyToBuy, price, orderType) => ({
   type: actionTypes.BUY_CRYPTO,
   payload: {
     currencyPair,
-    currencyToBuy
+    currencyToBuy,
+    price,
+    orderType
   }
 });
 
-export const sellCrypto = (currencyPair, currencyToSell) => ({
+export const sellCrypto = (currencyPair, currencyToSell, price, orderType) => ({
   type: actionTypes.SELL_CRYPTO,
   payload: {
     currencyPair,
-    currencyToSell
+    currencyToSell,
+    price,
+    orderType
   }
 });
