@@ -1,18 +1,19 @@
 import React, { createContext, useReducer } from 'react';
 
+import { CURRENCIES } from '../constants';
 import reducer from './reducer';
 
 const initialState = {
   currenciesPrice: {
-    'btc': 0,
-    'eth': 0,
-    'usdt': 0
+    [CURRENCIES.BTC]: 0,
+    [CURRENCIES.ETH]: 0,
+    [CURRENCIES.USDC]: 0
   },
   wallet: {
-    'btc': 0,
-    'eth': 0,
-    'usdt': 0,
-    'ars': 0
+    [CURRENCIES.BTC]: 0,
+    [CURRENCIES.ETH]: 0,
+    [CURRENCIES.USDC]: 0,
+    [CURRENCIES.ARS]: 0
   },
   fees: 0,
   ordersHistory: []

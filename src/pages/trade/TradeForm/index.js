@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getBuyingPrice } from '../../../api';
 import { ORDER_TYPES, OPERATION_TYPE, CURRENCIES } from "../../../constants";
 import { AppContext } from "../../../state";
+import { buyCrypto } from "../../../state/actions";
 
 import OperationSection from './OperationSection';
 import CurrencySelection from "./CurrencySelection";
@@ -51,7 +52,7 @@ const TradeForm = () => {
     return () => window.clearInterval(intervalId); 
   }, [currencyToOperate]);
 
- /*
+ /**
   * For some reason e.target.value was undefined sometimes
   * so I decided to get the value from a parameter
   */
@@ -68,12 +69,17 @@ const TradeForm = () => {
 
   // This function will take care of all the transaction process
   const operateAsset = () => {
-    // const paymentCurrency = isBuying ? CURRENCIES.ARS : currencyToOperate;
-    // const returnCurrency = isBuying ? currencyToOperate : CURRENCIES.ARS;
+    const paymentCurrency = isBuying ? CURRENCIES.ARS : currencyToOperate;
+    const returnCurrency = isBuying ? currencyToOperate : CURRENCIES.ARS;
 
-    // if (isBuying) {
-      
-    // }
+    if (isBuying) {
+      const pair = {
+        [paymentCurrency]: amount,
+        [returnCurrency]: amount / latestCurrencyPrice
+      };
+      // When buying, we know that the currency to buy can never be ARS
+      dispatcher(buyCrypto(pair, currencyToOperate));
+    }
   }
 
   return (
