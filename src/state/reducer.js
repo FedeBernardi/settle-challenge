@@ -13,6 +13,7 @@ const reducer = (state, { type, payload }) => {
 
       state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] - optInfo.total;
       state.wallet[currencyToBuy] = state.wallet[currencyToBuy] + optInfo.amount;
+      state.fees = state.fees + optInfo.fee;
 
       state.ordersHistory.push({
         date: Date.now(),
@@ -26,6 +27,7 @@ const reducer = (state, { type, payload }) => {
 
       state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] + optInfo.total;
       state.wallet[currencyToSell] = state.wallet[currencyToSell] - optInfo.amount;
+      state.fees = state.fees + optInfo.fee;
 
       state.ordersHistory.push({
         date: Date.now(),

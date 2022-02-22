@@ -38,6 +38,7 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
   const [amountToSpend, setAmountToSpend] = useState('');
   const [limitPrice, setLimitPrice] = useState('');
   const [latestCurrencyPrice, setLatestCurrencyPrice] = useState(0);
+  const [fee, setFee] = useState(0);
 
   const isLimitOrder = orderType === ORDER_TYPES.LIMIT;
   const isBuying = operationType === OPERATION_TYPE.BUY;
@@ -59,6 +60,15 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
 
     return () => window.clearInterval(intervalId); 
   }, [currencyToOperate, operationType, orderType]);
+
+  // We calculate the fee here
+  useEffect(() => {
+    const price = isLimitOrder ? limitPrice : latestCurrencyPrice;
+    const total = isBuying ? amountToSpend : parseFloat(amountToSpend * price).toFixed(2)
+    const newFee = (1.5 * total) / 1.5;
+
+    setFee(newFee);
+  }, [limitPrice, amountToSpend, latestCurrencyPrice, orderType, operationType]);
 
  /**
   * For some reason e.target.value was undefined sometimes
@@ -101,17 +111,18 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
       pair: `${currencyToOperate}/${CURRENCIES.ARS}`,
       price,
       amount: 0,
-      total: 0
+      total: 0,
+      fee
     }
 
     if (isBuying) {
       optInfo.amount = amountToSpend / price;
-      optInfo.total = amountToSpend;
+      optInfo.total = amountToSpend - fee;
     } else {
       optInfo.amount = amountToSpend;
-      optInfo.total = parseFloat(amountToSpend * price).toFixed(2)
+      optInfo.total = amountToSpend * price - fee
     }
-    
+
     // If it's a Market opt, we want to immediately execute it
     if (!isLimitOrder) {
       executeOperation(optInfo);
@@ -124,7 +135,6 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
       executeOperation(optInfo);
       removeLimitOrder();
     }, 60000);
-    
   }
 
   return (
@@ -148,6 +158,7 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
           onLimitPriceChange={onLimitPriceChange}
           isBuying={isBuying}
           isLimitOrder={isLimitOrder}
+          fee={fee}
         />
       </div>
       <div className="operate">

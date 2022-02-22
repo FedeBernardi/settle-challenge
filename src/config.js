@@ -36,6 +36,7 @@ export const ordersTableConfig = [
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
+    render: total => parseFloat(total).toFixed(2)
   }
 ];
 
@@ -70,5 +71,6 @@ export const openOrdersTableConfig = [
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
+    render: total => parseFloat(total).toFixed(2)
   }
 ];

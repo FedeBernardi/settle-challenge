@@ -1,11 +1,21 @@
 import { Input } from "antd";
 
-const AmountSection = ({ amount, currencyToOperate, onAmountToSpendChange, latestCurrencyPrice, isBuying, isLimitOrder, orderType, limitPrice, onLimitPriceChange }) => {
+const AmountSection = ({
+  amount,
+  currencyToOperate,
+  onAmountToSpendChange,
+  latestCurrencyPrice,
+  isBuying,
+  isLimitOrder,
+  limitPrice,
+  onLimitPriceChange,
+  fee
+}) => {
   const getResultMsg = () => {
     const price = isLimitOrder ? limitPrice : latestCurrencyPrice;
     const payingCurrency = isBuying ? 'ARS' : currencyToOperate;
     const receivingCurrency = isBuying ? currencyToOperate : 'ARS';
-    const totalAfterOperating = isBuying ? amount / price : parseFloat(amount * price).toFixed(2);
+    const totalAfterOperating = isBuying ? (amount - fee) / price : parseFloat((amount * price) - fee).toFixed(2);
 
     return `For ${amount} ${payingCurrency} you will get ${totalAfterOperating} ${receivingCurrency}`
   }
