@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Table } from 'antd';
 
 import { AppContext } from "../../state";
-import { ordersTableConfig, dateFormat } from "./config";
+import { ordersTableConfig, dateFormat } from "../../config";
 
 const OrdersHistory = () => {
   const [state] = useContext(AppContext);

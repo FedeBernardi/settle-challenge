@@ -6,22 +6,14 @@ const OperateButton = styled(Button)`
   background: rgb(132, 142, 156);
   border-color: rgb(132, 142, 156);
 
+  &.buy:hover,
   &.buy.active{
     background-color: rgb(14, 203, 129);
     border-color: rgb(14, 203, 129);
   }
 
-  &.buy:hover {
-    background-color: rgb(14, 203, 129);
-    border-color: rgb(14, 203, 129);
-  }
-
+  &.sell:hover,
   &.sell.active{
-    background-color: rgb(246, 70, 93);
-    border-color: rgb(246, 70, 93);
-  }
-
-  &.sell:hover {
     background-color: rgb(246, 70, 93);
     border-color: rgb(246, 70, 93);
   }

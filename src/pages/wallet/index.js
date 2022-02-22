@@ -31,6 +31,16 @@ const Container = styled.div`
   .orders-container {
     margin: 25px;
   }
+
+  .row-buy {
+    color: rgb(14, 203, 129);
+    font-weight: bold;
+  }
+
+  .row-sell {
+    color: rgb(246, 70, 93);
+    font-weight: bold;
+  }
 `;
 
 const WalletPage = () => {

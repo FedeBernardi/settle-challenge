@@ -15,6 +15,7 @@ import OperateButton from './OperateButton';
 
 const Container = styled.div`
   width: 400px;
+  margin: auto auto 40px;
   
   h3 {
     margin-top: 30px;
@@ -29,14 +30,17 @@ const Container = styled.div`
   }
 `;
 
-const TradeForm = () => {
+const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
   const [, dispatcher] = useContext(AppContext);
   const [operationType, setOperationType] = useState(OPERATION_TYPE.BUY);
   const [currencyToOperate, setCurrencyToOperate] = useState(CURRENCIES.BTC);
   const [orderType, setOrderType] = useState(ORDER_TYPES.MARKET);
-  const [amount, setAmount] = useState('');
+  const [amountToSpend, setAmountToSpend] = useState('');
   const [limitPrice, setLimitPrice] = useState('');
   const [latestCurrencyPrice, setLatestCurrencyPrice] = useState(0);
+
+  const isLimitOrder = orderType === ORDER_TYPES.LIMIT;
+  const isBuying = operationType === OPERATION_TYPE.BUY;
 
   const getLatestBuyingPrice = async () => {
     const price = await getPrice(currencyToOperate, isBuying);
@@ -44,6 +48,9 @@ const TradeForm = () => {
   }
 
   useEffect(() => {
+    // We don't need the API's quotes when the user is placing a LIMIT order
+    if (isLimitOrder) return;
+    
     // We want to get it as soon as the component gets mounted
     getLatestBuyingPrice();
 
@@ -51,7 +58,7 @@ const TradeForm = () => {
     const intervalId = setInterval(getLatestBuyingPrice, 3000);
 
     return () => window.clearInterval(intervalId); 
-  }, [currencyToOperate, operationType]);
+  }, [currencyToOperate, operationType, orderType]);
 
  /**
   * For some reason e.target.value was undefined sometimes
@@ -64,29 +71,15 @@ const TradeForm = () => {
   const onOrderTypeChange = e => setOrderType(e.target.value);
 
   // @TODO: add validations to provent non numeric characters and founds available
-  const onAmountChange = e => setAmount(e.target.value);
+  const onAmountToSpendChange = e => setAmountToSpend(e.target.value);
 
-  const isBuying = operationType === OPERATION_TYPE.BUY;
-
-  // This function will take care of all the transaction process
-  const operateAsset = () => {
-    const paymentCurrency = isBuying ? CURRENCIES.ARS : currencyToOperate;
-    const returnCurrency = isBuying ? currencyToOperate : CURRENCIES.ARS;
-
+  const onLimitPriceChange = e => setLimitPrice(e.target.value);
+  
+  const executeOperation = optInfo => {
     if (isBuying) {
-      const pair = {
-        [paymentCurrency]: amount,
-        [returnCurrency]: amount / latestCurrencyPrice
-      };
-      // When buying, we know that the currency to buy can never be ARS
-      dispatcher(buyCrypto(pair, currencyToOperate, latestCurrencyPrice, orderType));
+      dispatcher(buyCrypto(optInfo, currencyToOperate));
     } else {
-      const pair = {
-        [paymentCurrency]: amount,
-        [returnCurrency]: amount * latestCurrencyPrice
-      };
-
-      dispatcher(sellCrypto(pair, currencyToOperate, latestCurrencyPrice, orderType));
+      dispatcher(sellCrypto(optInfo, currencyToOperate));
     }
 
     notification.success({
@@ -96,7 +89,42 @@ const TradeForm = () => {
     });
 
     // reseting the input
-    setAmount('');
+    setAmountToSpend('');
+  }
+  
+  // This function will take care of all the transaction process
+  const operateAsset = () => {
+    const price = isLimitOrder ? limitPrice : latestCurrencyPrice;
+    const optInfo = {
+      operation: operationType,
+      orderType,
+      pair: `${currencyToOperate}/${CURRENCIES.ARS}`,
+      price,
+      amount: 0,
+      total: 0
+    }
+
+    if (isBuying) {
+      optInfo.amount = amountToSpend / price;
+      optInfo.total = amountToSpend;
+    } else {
+      optInfo.amount = amountToSpend;
+      optInfo.total = parseFloat(amountToSpend * price).toFixed(2)
+    }
+    
+    // If it's a Market opt, we want to immediately execute it
+    if (!isLimitOrder) {
+      executeOperation(optInfo);
+      return;
+    }
+
+    addNewLimitOrder(optInfo)
+
+    setTimeout(() => {
+      executeOperation(optInfo);
+      removeLimitOrder();
+    }, 60000);
+    
   }
 
   return (
@@ -112,11 +140,14 @@ const TradeForm = () => {
       </div>
       <div className="amount">
         <AmountSection
-          amount={amount}
+          amount={amountToSpend}
+          limitPrice={limitPrice}
           latestCurrencyPrice={latestCurrencyPrice}
           currencyToOperate={currencyToOperate}
-          onChange={onAmountChange}
+          onAmountToSpendChange={onAmountToSpendChange}
+          onLimitPriceChange={onLimitPriceChange}
           isBuying={isBuying}
+          isLimitOrder={isLimitOrder}
         />
       </div>
       <div className="operate">

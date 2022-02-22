@@ -9,37 +9,27 @@ const reducer = (state, { type, payload }) => {
       return { ...state };
     }
     case actionTypes.BUY_CRYPTO: {
-      const { currencyPair, currencyToBuy, price, orderType } = payload;
+      const { optInfo, currencyToBuy } = payload;
 
-      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] - currencyPair[CURRENCIES.ARS];
-      state.wallet[currencyToBuy] = state.wallet[currencyToBuy] + currencyPair[currencyToBuy];
+      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] - optInfo.total;
+      state.wallet[currencyToBuy] = state.wallet[currencyToBuy] + optInfo.amount;
 
       state.ordersHistory.push({
         date: Date.now(),
-        operation: OPERATION_TYPE.BUY,
-        orderType,
-        pair: `${currencyToBuy}/${CURRENCIES.ARS}`,
-        price,
-        amount: currencyPair[currencyToBuy],
-        total: currencyPair[CURRENCIES.ARS]
+        ...optInfo
       });
 
       return { ...state };
     }
     case actionTypes.SELL_CRYPTO: {
-      const { currencyPair, currencyToSell, price, orderType } = payload;
+      const { optInfo, currencyToSell } = payload;
 
-      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] + currencyPair[CURRENCIES.ARS];
-      state.wallet[currencyToSell] = state.wallet[currencyToSell] - currencyPair[currencyToSell];
+      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] + optInfo.total;
+      state.wallet[currencyToSell] = state.wallet[currencyToSell] - optInfo.amount;
 
       state.ordersHistory.push({
         date: Date.now(),
-        operation: OPERATION_TYPE.SELL,
-        orderType,
-        pair: `${CURRENCIES.ARS}/${currencyToSell}`,
-        price,
-        amount: currencyPair[currencyToSell],
-        total: currencyPair[CURRENCIES.ARS]
+        ...optInfo
       });
 
       return { ...state };
