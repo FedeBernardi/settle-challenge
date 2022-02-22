@@ -11,7 +11,7 @@ const reducer = (state, { type, payload }) => {
     case actionTypes.BUY_CRYPTO: {
       const { optInfo, currencyToBuy } = payload;
 
-      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] - optInfo.total;
+      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] - optInfo.total - optInfo.fee;
       state.wallet[currencyToBuy] = state.wallet[currencyToBuy] + optInfo.amount;
       state.fees = state.fees + optInfo.fee;
 
@@ -25,7 +25,7 @@ const reducer = (state, { type, payload }) => {
     case actionTypes.SELL_CRYPTO: {
       const { optInfo, currencyToSell } = payload;
 
-      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] + optInfo.total;
+      state.wallet[CURRENCIES.ARS] = state.wallet[CURRENCIES.ARS] + optInfo.total - optInfo.fee;
       state.wallet[currencyToSell] = state.wallet[currencyToSell] - optInfo.amount;
       state.fees = state.fees + optInfo.fee;
 

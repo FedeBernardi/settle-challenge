@@ -65,7 +65,7 @@ const TradeForm = ({ addNewLimitOrder, removeLimitOrder }) => {
   useEffect(() => {
     const price = isLimitOrder ? limitPrice : latestCurrencyPrice;
     const total = isBuying ? amountToSpend : parseFloat(amountToSpend * price).toFixed(2)
-    const newFee = (1.5 * total) / 1.5;
+    const newFee = (1.5 * total) / 100;
 
     setFee(newFee);
   }, [limitPrice, amountToSpend, latestCurrencyPrice, orderType, operationType]);

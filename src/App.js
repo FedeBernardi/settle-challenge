@@ -1,9 +1,8 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import 'antd/dist/antd.css';
 
 import { AppContextProvider } from './state';
 
-import HomePage from './pages/home';
 import TradePage from './pages/trade';
 import WalletPage from './pages/wallet';
 import DepositPage from './pages/deposit';
@@ -15,11 +14,10 @@ function App() {
       <BrowserRouter>
         <NavBar />
         <Routes>
-          <Route path='/' element={<HomePage />} />
           <Route path='/trade' element={<TradePage />} />
           <Route path='/wallet' element={<WalletPage />} />
           <Route path='/deposit' element={<DepositPage />} />
-          <Route path='*' element={<HomePage />} />
+          <Route path='*' element={<Navigate to='/trade' />} />
         </Routes>
       </BrowserRouter>
     </AppContextProvider>
