@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar Component matches snapshot 1`] = `
+<nav
+  class="sc-bdvvtL eluuLJ"
+>
+  <a
+    href="/trade"
+  >
+    <span
+      class="sc-gsDKAQ eqyydY"
+    >
+      Trade
+    </span>
+  </a>
+  <a
+    href="/wallet"
+  >
+    <span
+      class="sc-gsDKAQ eqyydY"
+    >
+      Wallet
+    </span>
+  </a>
+  <a
+    href="/deposit"
+  >
+    <span
+      class="sc-gsDKAQ eqyydY"
+    >
+      Deposit
+    </span>
+  </a>
+  <span
+    class="fees-counter"
+  >
+    Fees: 0.00 ARS
+  </span>
+</nav>
+`;
